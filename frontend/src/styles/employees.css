@@ -1,0 +1,486 @@
+
+.employee-page {
+  min-height: 100vh;
+  padding: 40px;
+  color: #f5f8ff;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(120, 220, 255, 0.14),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(150, 130, 255, 0.12),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #172733 0%,
+      #243b49 45%,
+      #1d3040 100%
+    );
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background glow */
+
+.employee-page::before {
+  content: "";
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  top: -180px;
+  left: -150px;
+
+  background: rgba(150, 225, 255, 0.12);
+  filter: blur(100px);
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.employee-page::after {
+  content: "";
+  position: fixed;
+  width: 450px;
+  height: 450px;
+  bottom: -200px;
+  right: -120px;
+
+  background: rgba(150, 130, 255, 0.13);
+  filter: blur(100px);
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.employee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.employee-header h1 {
+  margin: 0;
+
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.employee-header p {
+  margin-top: 7px;
+
+  color: rgba(235, 244, 255, 0.58);
+  font-size: 14px;
+}
+
+
+/* =========================================
+   ADD EMPLOYEE CARD
+   ========================================= */
+
+.employee-form-card {
+  padding: 28px;
+
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.10);
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  margin-bottom: 28px;
+}
+
+.employee-form-card h2 {
+  margin: 0 0 20px;
+
+  font-size: 18px;
+}
+
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.employee-form {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr)
+    auto;
+
+  gap: 16px;
+
+  align-items: end;
+}
+
+.employee-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.employee-field label {
+  font-size: 12px;
+
+  color: rgba(240, 248, 255, 0.65);
+
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.employee-field input,
+.employee-field select {
+  width: 100%;
+  box-sizing: border-box;
+
+  height: 46px;
+
+  padding: 0 14px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  outline: none;
+
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(10px);
+
+  transition: 0.25s ease;
+}
+
+.employee-field input::placeholder {
+  color: rgba(235, 245, 255, 0.38);
+}
+
+.employee-field input:focus,
+.employee-field select:focus {
+  border-color: rgba(160, 230, 255, 0.65);
+
+  background: rgba(255, 255, 255, 0.12);
+
+  box-shadow:
+    0 0 0 3px rgba(140, 220, 255, 0.10),
+    0 0 20px rgba(140, 220, 255, 0.08);
+}
+
+
+/* =========================================
+   ADD BUTTON
+   ========================================= */
+
+.add-employee-btn {
+  height: 46px;
+
+  padding: 0 22px;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  border-radius: 12px;
+
+  background: rgba(180, 235, 255, 0.16);
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(12px);
+
+  transition: all 0.25s ease;
+}
+
+.add-employee-btn:hover {
+  background: rgba(180, 235, 255, 0.25);
+
+  border-color: rgba(190, 240, 255, 0.4);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 25px rgba(100, 210, 255, 0.15);
+}
+
+
+/* =========================================
+   EMPLOYEE LIST CARD
+   ========================================= */
+
+.employee-list-card {
+  padding: 28px;
+
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.09);
+
+  border: 1px solid rgba(255, 255, 255, 0.17);
+
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.employee-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 22px;
+}
+
+.employee-list-header h2 {
+  margin: 0;
+
+  font-size: 22px;
+}
+
+.employee-count {
+  padding: 7px 12px;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.10);
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+
+  color: rgba(240, 248, 255, 0.7);
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   EMPLOYEE ROW
+   ========================================= */
+
+.employee-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.employee-card {
+  display: flex;
+
+  align-items: center;
+
+  padding: 18px;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.07);
+
+  border: 1px solid rgba(255, 255, 255, 0.11);
+
+  transition: all 0.25s ease;
+}
+
+.employee-card:hover {
+  background: rgba(255, 255, 255, 0.11);
+
+  border-color: rgba(180, 230, 255, 0.22);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================
+   AVATAR
+   ========================================= */
+
+.employee-avatar {
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 16px;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(190, 235, 255, 0.30),
+      rgba(170, 160, 255, 0.20)
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.20);
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+
+/* =========================================
+   EMPLOYEE INFORMATION
+   ========================================= */
+
+.employee-info {
+  flex: 1;
+}
+
+.employee-info h3 {
+  margin: 0 0 5px;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.employee-info p {
+  margin: 3px 0;
+
+  color: rgba(235, 245, 255, 0.52);
+
+  font-size: 12px;
+}
+
+
+/* =========================================
+   ROLE BADGE
+   ========================================= */
+
+.employee-role {
+  padding: 6px 11px;
+
+  border-radius: 20px;
+
+  background: rgba(170, 220, 255, 0.10);
+
+  border: 1px solid rgba(170, 220, 255, 0.18);
+
+  color: rgba(220, 245, 255, 0.85);
+
+  font-size: 11px;
+
+  margin-right: 18px;
+}
+
+
+/* =========================================
+   ACTION BUTTONS
+   ========================================= */
+
+.employee-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.employee-actions button {
+  height: 34px;
+
+  padding: 0 13px;
+
+  border-radius: 9px;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  background: rgba(255, 255, 255, 0.07);
+
+  color: rgba(245, 250, 255, 0.85);
+
+  cursor: pointer;
+
+  font-size: 12px;
+
+  transition: 0.2s ease;
+}
+
+.employee-actions button:hover {
+  background: rgba(255, 255, 255, 0.14);
+
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.employee-actions .delete-btn:hover {
+  background: rgba(255, 100, 100, 0.14);
+
+  border-color: rgba(255, 130, 130, 0.30);
+
+  color: #ffd5d5;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+  .employee-page {
+    padding: 25px;
+  }
+
+  .employee-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .add-employee-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .employee-page {
+    padding: 18px;
+  }
+
+  .employee-form {
+    grid-template-columns: 1fr;
+  }
+
+  .employee-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .employee-role {
+    margin-left: 64px;
+    margin-top: 8px;
+  }
+
+  .employee-actions {
+    width: 100%;
+    margin-left: 64px;
+    margin-top: 12px;
+  }
+}
