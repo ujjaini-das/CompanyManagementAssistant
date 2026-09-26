@@ -1,7 +1,8 @@
 const express = require("express");
 
 const {
-    analyzeProjectController
+    analyzeProjectController,
+    chatWithAssistantController
 } = require("../controllers/aiController");
 
 const {
@@ -16,6 +17,12 @@ router.post(
     protect,
     authorizeRoles("admin", "manager"),
     analyzeProjectController
+);
+router.post(
+    "/chat",
+    protect,
+    authorizeRoles("admin", "manager"),
+    chatWithAssistantController
 );
 
 module.exports = router;
