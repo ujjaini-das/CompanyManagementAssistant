@@ -1,81 +1,276 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function EmployeeForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [department, setDepartment] = useState("");
-  const [role, setRole] = useState("");
+export default function EmployeeForm({
+  onAddEmployee,
+  onClose,
+  employee,
+}) {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    department: "",
+    role: "",
+    status: "Active",
+  });
 
-  const handleSubmit = (event) => {
+  /* =====================================================
+     LOAD EMPLOYEE WHEN EDITING
+  ===================================================== */
+
+  useEffect(() => {
+    if (employee) {
+      setFormData({
+        name: employee.name || "",
+        email: employee.email || "",
+        department: employee.department || "",
+        role: employee.role || "",
+        status: employee.status || "Active",
+      });
+    } else {
+      setFormData({
+        name: "",
+        email: "",
+        department: "",
+        role: "",
+        status: "Active",
+      });
+    }
+  }, [employee]);
+
+
+  /* =====================================================
+     INPUT CHANGE
+  ===================================================== */
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  }
+
+
+  /* =====================================================
+     SUBMIT
+  ===================================================== */
+
+  function handleSubmit(event) {
     event.preventDefault();
 
-    console.log({
-      name,
-      email,
-      department,
-      role,
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.department.trim() ||
+      !formData.role.trim()
+    ) {
+      return;
+    }
+
+    onAddEmployee({
+      ...formData,
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      department: formData.department.trim(),
+      role: formData.role.trim(),
     });
-  };
+  }
+
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Add Employee</h2>
+    <div
+      className="employee-modal"
+      onMouseDown={(event) => {
+        event.stopPropagation();
+      }}
+    >
 
-      <div>
-        <label>Name</label>
-        <br />
-        <input
-          type="text"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          placeholder="Enter name"
-        />
+      {/* =================================================
+          MODAL HEADER
+      ================================================= */}
+
+      <div className="employee-modal-header">
+
+        <div>
+
+          <span className="modal-label">
+            TEAM MANAGEMENT
+          </span>
+
+          <h2>
+            {employee
+              ? "Edit Employee"
+              : "Add Employee"}
+          </h2>
+
+          <p className="modal-description">
+            {employee
+              ? "Update employee information."
+              : "Add a new member to your workspace."}
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          className="close-btn"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          ×
+        </button>
+
       </div>
 
-      <br />
 
-      <div>
-        <label>Email</label>
-        <br />
-        <input
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="Enter email"
-        />
-      </div>
+      {/* =================================================
+          FORM
+      ================================================= */}
 
-      <br />
+      <form onSubmit={handleSubmit}>
 
-      <div>
-        <label>Department</label>
-        <br />
-        <input
-          type="text"
-          value={department}
-          onChange={(event) => setDepartment(event.target.value)}
-          placeholder="Enter department"
-        />
-      </div>
+        {/* NAME */}
 
-      <br />
+        <div className="form-group">
 
-      <div>
-        <label>Role</label>
-        <br />
-        <input
-          type="text"
-          value={role}
-          onChange={(event) => setRole(event.target.value)}
-          placeholder="Enter role"
-        />
-      </div>
+          <label htmlFor="employee-name">
+            Name
+          </label>
 
-      <br />
+          <input
+            id="employee-name"
+            type="text"
+            name="name"
+            placeholder="Enter employee name"
+            value={formData.name}
+            onChange={handleChange}
+            autoComplete="name"
+            required
+          />
 
-      <button type="submit">Add Employee</button>
-    </form>
+        </div>
+
+
+        {/* EMAIL */}
+
+        <div className="form-group">
+
+          <label htmlFor="employee-email">
+            Email
+          </label>
+
+          <input
+            id="employee-email"
+            type="email"
+            name="email"
+            placeholder="Enter employee email"
+            value={formData.email}
+            onChange={handleChange}
+            autoComplete="email"
+            required
+          />
+
+        </div>
+
+
+        {/* DEPARTMENT */}
+
+        <div className="form-group">
+
+          <label htmlFor="employee-department">
+            Department
+          </label>
+
+          <input
+            id="employee-department"
+            type="text"
+            name="department"
+            placeholder="e.g. Development"
+            value={formData.department}
+            onChange={handleChange}
+            required
+          />
+
+        </div>
+
+
+        {/* ROLE */}
+
+        <div className="form-group">
+
+          <label htmlFor="employee-role">
+            Role
+          </label>
+
+          <input
+            id="employee-role"
+            type="text"
+            name="role"
+            placeholder="e.g. Developer"
+            value={formData.role}
+            onChange={handleChange}
+            required
+          />
+
+        </div>
+
+
+        {/* STATUS */}
+
+        <div className="form-group">
+
+          <label htmlFor="employee-status">
+            Status
+          </label>
+
+          <select
+            id="employee-status"
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+          >
+
+            <option value="Active">
+              Active
+            </option>
+
+            <option value="Inactive">
+              Inactive
+            </option>
+
+          </select>
+
+        </div>
+
+
+        {/* BUTTONS */}
+
+        <div className="form-actions">
+
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="submit"
+            className="save-btn"
+          >
+            {employee
+              ? "Save Changes"
+              : "Add Employee"}
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
   );
 }
-
-export default EmployeeForm;

@@ -1,8 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
+import EmployeeForm from "../components/EmployeeForm";
+
 import "../styles/employees.css";
 
 export default function Employees() {
+  /* =====================================================
+     EMPLOYEE DATA
+  ===================================================== */
+
   const [employees, setEmployees] = useState([
     {
       id: 1,
@@ -10,6 +17,7 @@ export default function Employees() {
       email: "rahul@example.com",
       department: "Development",
       role: "Developer",
+      status: "Active",
     },
     {
       id: 2,
@@ -17,6 +25,7 @@ export default function Employees() {
       email: "ananya@example.com",
       department: "Marketing",
       role: "Manager",
+      status: "Active",
     },
     {
       id: 3,
@@ -24,116 +33,99 @@ export default function Employees() {
       email: "riya@example.com",
       department: "Design",
       role: "UI/UX Designer",
+      status: "Inactive",
     },
   ]);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    department: "",
-    role: "",
-  });
+  /* =====================================================
+     STATE
+  ===================================================== */
 
-  const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
   const [search, setSearch] = useState("");
 
-  // Handle input
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  /* =====================================================
+     ADD / UPDATE EMPLOYEE
+  ===================================================== */
 
-  // Add / Update employee
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.department ||
-      !formData.role
-    ) {
-      alert("Please fill all fields.");
-      return;
-    }
-
-    if (editingId) {
-      setEmployees(
-        employees.map((employee) =>
-          employee.id === editingId
+  function handleSaveEmployee(employeeData) {
+    if (editingEmployee) {
+      setEmployees((prevEmployees) =>
+        prevEmployees.map((employee) =>
+          employee.id === editingEmployee.id
             ? {
                 ...employee,
-                ...formData,
+                ...employeeData,
               }
             : employee
         )
       );
 
-      setEditingId(null);
-    } else {
-      const newEmployee = {
-        id: Date.now(),
-        ...formData,
-      };
+      setEditingEmployee(null);
+      setShowForm(false);
 
-      setEmployees([...employees, newEmployee]);
+      return;
     }
 
-    setFormData({
-      name: "",
-      email: "",
-      department: "",
-      role: "",
-    });
-  };
+    const newEmployee = {
+      id: Date.now(),
+      ...employeeData,
+      status: employeeData.status || "Active",
+    };
 
-  // Edit employee
-  const handleEdit = (employee) => {
-    setFormData({
-      name: employee.name,
-      email: employee.email,
-      department: employee.department,
-      role: employee.role,
-    });
+    setEmployees((prevEmployees) => [
+      ...prevEmployees,
+      newEmployee,
+    ]);
 
-    setEditingId(employee.id);
+    setShowForm(false);
+  }
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+  /* =====================================================
+     EDIT
+  ===================================================== */
 
-  // Delete employee
-  const handleDelete = (id) => {
+  function handleEdit(employee) {
+    setEditingEmployee(employee);
+    setShowForm(true);
+  }
+
+  /* =====================================================
+     DELETE
+  ===================================================== */
+
+  function handleDelete(id) {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this employee?"
     );
 
-    if (confirmDelete) {
-      setEmployees(
-        employees.filter((employee) => employee.id !== id)
-      );
+    if (!confirmDelete) {
+      return;
     }
-  };
 
-  // Cancel editing
-  const handleCancel = () => {
-    setEditingId(null);
+    setEmployees((prevEmployees) =>
+      prevEmployees.filter(
+        (employee) => employee.id !== id
+      )
+    );
+  }
 
-    setFormData({
-      name: "",
-      email: "",
-      department: "",
-      role: "",
-    });
-  };
+  /* =====================================================
+     CLOSE FORM
+  ===================================================== */
 
-  // Search
+  function handleCloseForm() {
+    setShowForm(false);
+    setEditingEmployee(null);
+  }
+
+  /* =====================================================
+     SEARCH
+  ===================================================== */
+
   const filteredEmployees = employees.filter((employee) => {
-    const value = search.toLowerCase();
+    const value = search.toLowerCase().trim();
 
     return (
       employee.name.toLowerCase().includes(value) ||
@@ -143,36 +135,40 @@ export default function Employees() {
     );
   });
 
-  // Avatar initials
-  const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-  };
+  /* =====================================================
+     UI
+  ===================================================== */
 
   return (
     <div className="employee-page">
 
-      {/* ================= SIDEBAR ================= */}
+      {/* =================================================
+          SIDEBAR
+      ================================================= */}
 
       <aside className="employee-sidebar">
 
+        {/* LOGO */}
+
         <div className="dashboard-logo">
+
           <div className="dashboard-logo-icon">
             M
           </div>
 
           <span>MEME AI</span>
+
         </div>
+
+
+        {/* NAVIGATION */}
 
         <nav className="dashboard-nav">
 
           <p className="nav-label">
             WORKSPACE
           </p>
+
 
           <Link
             to="/dashboard"
@@ -182,6 +178,7 @@ export default function Employees() {
             <span>Overview</span>
           </Link>
 
+
           <Link
             to="/assistant"
             className="dashboard-nav-item"
@@ -189,6 +186,7 @@ export default function Employees() {
             <span className="nav-icon">✦</span>
             <span>AI Assistant</span>
           </Link>
+
 
           <Link
             to="/employees"
@@ -198,6 +196,7 @@ export default function Employees() {
             <span>Employees</span>
           </Link>
 
+
           <Link
             to="/tasks"
             className="dashboard-nav-item"
@@ -205,6 +204,7 @@ export default function Employees() {
             <span className="nav-icon">✓</span>
             <span>Tasks</span>
           </Link>
+
 
           <Link
             to="/projects"
@@ -214,9 +214,11 @@ export default function Employees() {
             <span>Projects</span>
           </Link>
 
+
           <p className="nav-label second-label">
             INSIGHTS
           </p>
+
 
           <Link
             to="/analytics"
@@ -226,6 +228,7 @@ export default function Employees() {
             <span>Analytics</span>
           </Link>
 
+
           <Link
             to="/activity"
             className="dashboard-nav-item"
@@ -234,9 +237,11 @@ export default function Employees() {
             <span>Activity</span>
           </Link>
 
+
           <p className="nav-label second-label">
             SYSTEM
           </p>
+
 
           <Link
             to="/settings"
@@ -248,16 +253,22 @@ export default function Employees() {
 
         </nav>
 
+
+        {/* SIDEBAR BOTTOM */}
+
         <div className="sidebar-bottom">
 
           <div className="ai-mini-status">
+
             <span className="online-dot"></span>
 
             <div>
               <strong>MEME AI</strong>
               <small>Systems operational</small>
             </div>
+
           </div>
+
 
           <div className="sidebar-user">
 
@@ -270,7 +281,10 @@ export default function Employees() {
               <span>Free Workspace</span>
             </div>
 
-            <button className="user-more">
+            <button
+              type="button"
+              className="user-more"
+            >
               ⋮
             </button>
 
@@ -281,27 +295,36 @@ export default function Employees() {
       </aside>
 
 
-      {/* ================= MAIN ================= */}
+      {/* =================================================
+          MAIN CONTENT
+      ================================================= */}
 
       <main className="employee-content">
 
-        {/* Topbar */}
+        {/* TOP BAR */}
 
         <header className="employee-topbar">
 
           <div className="breadcrumb">
-            Workspace
+            <span>Workspace</span>
             <span>/</span>
             <strong>Employees</strong>
           </div>
 
+
           <div className="topbar-right">
 
-            <button className="topbar-icon">
+            <button
+              type="button"
+              className="topbar-icon"
+            >
               ⌕
             </button>
 
-            <button className="topbar-icon">
+            <button
+              type="button"
+              className="topbar-icon"
+            >
               ♢
             </button>
 
@@ -314,170 +337,66 @@ export default function Employees() {
         </header>
 
 
-        {/* Page Header */}
+        {/* =================================================
+            PAGE HEADER
+        ================================================= */}
 
-        <section className="employee-hero">
+        <section className="employees-header">
 
           <div>
-            <p className="hero-small">
-              WORKSPACE
-            </p>
+
+            <div className="employees-breadcrumb">
+              Workspace
+              <span>/</span>
+              Employees
+            </div>
+
 
             <h1>
               Employees
             </h1>
 
-            <p>
+
+            <p className="employees-subtitle">
               Manage your team and employee information.
             </p>
-          </div>
 
-          <div className="employee-total">
 
-            <span>
+            <div className="employee-count">
               Total Employees
-            </span>
-
-            <strong>
-              {employees.length}
-            </strong>
-
-          </div>
-
-        </section>
-
-
-        {/* ================= ADD EMPLOYEE ================= */}
-
-        <section className="employee-form-card">
-
-          <div className="section-heading">
-
-            <div>
-              <h2>
-                {editingId
-                  ? "Edit Employee"
-                  : "Add Employee"}
-              </h2>
-
-              <p>
-                {editingId
-                  ? "Update employee information"
-                  : "Add a new member to your workspace"}
-              </p>
+              <strong>{employees.length}</strong>
             </div>
 
           </div>
 
 
-          <form
-            className="employee-form"
-            onSubmit={handleSubmit}
+          <button
+            type="button"
+            className="add-employee-btn"
+            onClick={() => {
+              setEditingEmployee(null);
+              setShowForm(true);
+            }}
           >
-
-            <div className="employee-field">
-
-              <label>
-                Full Name
-              </label>
-
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter employee name"
-              />
-
-            </div>
-
-
-            <div className="employee-field">
-
-              <label>
-                Email
-              </label>
-
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="employee@example.com"
-              />
-
-            </div>
-
-
-            <div className="employee-field">
-
-              <label>
-                Department
-              </label>
-
-              <input
-                type="text"
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                placeholder="e.g. Development"
-              />
-
-            </div>
-
-
-            <div className="employee-field">
-
-              <label>
-                Role
-              </label>
-
-              <input
-                type="text"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                placeholder="e.g. Developer"
-              />
-
-            </div>
-
-
-            <div className="employee-form-buttons">
-
-              <button
-                type="submit"
-                className="add-employee-btn"
-              >
-                {editingId
-                  ? "Update Employee"
-                  : "+ Add Employee"}
-              </button>
-
-              {editingId && (
-                <button
-                  type="button"
-                  className="cancel-btn"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-              )}
-
-            </div>
-
-          </form>
+            <span>+</span>
+            Add Employee
+          </button>
 
         </section>
 
 
-        {/* ================= EMPLOYEE LIST ================= */}
+        {/* =================================================
+            EMPLOYEE LIST CONTAINER
+        ================================================= */}
 
-        <section className="employee-list-card">
+        <section className="employee-container">
 
-          <div className="employee-list-header">
+          {/* HEADER */}
 
-            <div>
+          <div className="employee-container-header">
+
+            <div className="employee-container-title">
+
               <h2>
                 Employee List
               </h2>
@@ -485,43 +404,57 @@ export default function Employees() {
               <p>
                 Manage your workspace members
               </p>
+
             </div>
 
-            <div className="employee-count">
-              {filteredEmployees.length} Members
+
+            <div className="members-badge">
+
+              {filteredEmployees.length}
+
+              {" "}
+
+              {filteredEmployees.length === 1
+                ? "Member"
+                : "Members"}
+
             </div>
 
           </div>
 
 
-          {/* Search */}
+          {/* SEARCH */}
 
-          <div className="employee-search">
+          <div className="employee-search-wrapper">
 
-            <span>
+            <span className="employee-search-icon">
               ⌕
             </span>
 
             <input
               type="text"
+              className="employee-search"
               placeholder="Search employees..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
+              onChange={(event) =>
+                setSearch(event.target.value)
               }
             />
 
           </div>
 
 
-          {/* List */}
+          {/* EMPLOYEE LIST */}
 
           <div className="employee-list">
 
             {filteredEmployees.length === 0 ? (
 
-              <div className="empty-employees">
-                <div>♙</div>
+              <div className="employee-empty">
+
+                <div className="employee-empty-icon">
+                  ♙
+                </div>
 
                 <h3>
                   No employees found
@@ -530,56 +463,101 @@ export default function Employees() {
                 <p>
                   Try another search or add a new employee.
                 </p>
+
               </div>
 
             ) : (
 
               filteredEmployees.map((employee) => (
 
-                <div
+                <article
                   className="employee-card"
                   key={employee.id}
                 >
 
-                  <div className="employee-avatar">
-                    {getInitials(employee.name)}
+                  {/* PROFILE */}
+
+                  <div className="employee-profile">
+
+                    <div className="employee-avatar">
+                      {employee.name.charAt(0).toUpperCase()}
+                    </div>
+
+                    <div className="employee-profile-text">
+
+                      <h3 className="employee-name">
+                        {employee.name}
+                      </h3>
+
+                      <p className="employee-email">
+                        {employee.email}
+                      </p>
+
+                    </div>
+
                   </div>
 
+
+                  {/* DEPARTMENT */}
 
                   <div className="employee-info">
 
-                    <h3>
-                      {employee.name}
-                    </h3>
+                    <span className="employee-info-label">
+                      Department
+                    </span>
 
-                    <p>
-                      {employee.email}
-                    </p>
-
-                  </div>
-
-
-                  <div className="employee-department">
-
-                    <span>
+                    <span className="employee-info-value">
                       {employee.department}
                     </span>
 
                   </div>
 
 
-                  <div className="employee-role">
+                  {/* ROLE */}
 
-                    {employee.role}
+                  <div className="employee-info">
+
+                    <span className="employee-info-label">
+                      Role
+                    </span>
+
+                    <span className="employee-role">
+                      {employee.role}
+                    </span>
 
                   </div>
 
+
+                  {/* STATUS */}
+
+                  <div className="employee-info">
+
+                    <span className="employee-info-label">
+                      Status
+                    </span>
+
+                    <span
+                      className={`employee-status ${
+                        employee.status.toLowerCase()
+                      }`}
+                    >
+
+                      <span className="employee-status-dot"></span>
+
+                      {employee.status}
+
+                    </span>
+
+                  </div>
+
+
+                  {/* ACTIONS */}
 
                   <div className="employee-actions">
 
                     <button
                       type="button"
-                      className="edit-btn"
+                      className="employee-edit-btn"
                       onClick={() =>
                         handleEdit(employee)
                       }
@@ -587,9 +565,10 @@ export default function Employees() {
                       Edit
                     </button>
 
+
                     <button
                       type="button"
-                      className="delete-btn"
+                      className="employee-delete-btn"
                       onClick={() =>
                         handleDelete(employee.id)
                       }
@@ -599,7 +578,7 @@ export default function Employees() {
 
                   </div>
 
-                </div>
+                </article>
 
               ))
 
@@ -610,7 +589,7 @@ export default function Employees() {
         </section>
 
 
-        {/* Footer */}
+        {/* FOOTER */}
 
         <footer className="dashboard-footer">
 
@@ -627,10 +606,32 @@ export default function Employees() {
       </main>
 
 
-      {/* Background glow */}
+      {/* =================================================
+          ADD / EDIT MODAL
+      ================================================= */}
 
-      <div className="dashboard-glow glow-one"></div>
-      <div className="dashboard-glow glow-two"></div>
+      {showForm && (
+
+        <div
+          className="employee-modal-overlay"
+          onMouseDown={(event) => {
+            if (
+              event.target === event.currentTarget
+            ) {
+              handleCloseForm();
+            }
+          }}
+        >
+
+          <EmployeeForm
+            onAddEmployee={handleSaveEmployee}
+            onClose={handleCloseForm}
+            employee={editingEmployee}
+          />
+
+        </div>
+
+      )}
 
     </div>
   );

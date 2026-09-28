@@ -1,23 +1,30 @@
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
+import Projects from "./pages/Projects";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Employees from "./pages/Employees";
+import Tasks from "./pages/Tasks";
+import AIAnalysis from "./pages/AIAnalysis";
+
+import "./App.css";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* Open Login by default */}
         <Route
           path="/"
           element={<Navigate to="/login" replace />}
         />
 
-        {/* Authentication */}
         <Route
           path="/login"
           element={<Login />}
@@ -28,19 +35,31 @@ function App() {
           element={<Register />}
         />
 
-        {/* Dashboard */}
         <Route
           path="/dashboard"
           element={<Dashboard />}
         />
 
-        {/* Employees */}
         <Route
           path="/employees"
           element={<Employees />}
         />
 
-        {/* Unknown routes */}
+        <Route
+          path="/tasks"
+          element={<Tasks />}
+        />
+
+        <Route
+          path="/projects"
+          element={<Projects />}
+        />
+
+        <Route
+          path="/ai-analysis"
+          element={<AIAnalysis />}
+        />
+
         <Route
           path="*"
           element={<Navigate to="/login" replace />}

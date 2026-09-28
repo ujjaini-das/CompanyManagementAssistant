@@ -37,6 +37,13 @@ export default function Dashboard() {
             <span className="nav-icon">◇</span>
             <span>Projects</span>
           </Link>
+          <Link
+  to="/ai-analysis"
+  className="dashboard-nav-item"
+>
+  <span className="nav-icon">✦</span>
+  <span>AI Analysis</span>
+</Link>
 
           <p className="nav-label second-label">INSIGHTS</p>
 
