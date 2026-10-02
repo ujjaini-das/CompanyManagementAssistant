@@ -10,6 +10,8 @@ const projectRoutes = require("./routes/projectRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const workloadRoutes = require("./routes/workloadRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const dashboardAIRoutes = require("./routes/dashboardAIRoutes");
 
 connectDB();
 const app = express();
@@ -22,6 +24,8 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/workload", workloadRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/dashboard/ai", dashboardAIRoutes);
 
 app.get("/api/test", (req, res) => {
     res.json({
