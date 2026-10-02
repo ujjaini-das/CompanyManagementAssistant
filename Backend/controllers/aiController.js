@@ -1,9 +1,20 @@
 const mongoose = require("mongoose");
+
 const Project = require("../models/Project");
 const Task = require("../models/Task");
 const Employee = require("../models/Employee");
-const { analyzeProject } = require("../services/aiService");
-const { chatWithAssistant } = require("../services/chatService");
+
+const {
+    analyzeProject
+} = require("../services/aiService");
+
+const {
+    chatWithAssistant
+} = require("../services/chatService");
+
+const {
+    calculateWorkload
+} = require("../services/workloadService");
 
 const analyzeProjectController = async (req, res) => {
     try {
@@ -32,46 +43,75 @@ const analyzeProjectController = async (req, res) => {
             "name email department position"
         );
 
+        const now = new Date();
+
         const projectData = {
             project: {
                 name: project.name,
                 description: project.description,
-                manager: project.manager,
-                members: project.members,
+
+                manager: project.manager
+                    ? {
+                        name: project.manager.name,
+                        email: project.manager.email
+                    }
+                    : null,
+
+                members: project.members
+                    ? project.members.map((member) => ({
+                        name: member.name,
+                        email: member.email
+                    }))
+                    : [],
+
                 startDate: project.startDate,
                 deadline: project.deadline,
                 status: project.status,
                 priority: project.priority
             },
 
-            tasks: tasks.map((task) => {
-                const overdue =
-                    new Date(task.deadline) < new Date() &&
-                    task.status !== "COMPLETED";
+            tasks: tasks.map((task) => ({
+                title: task.title,
+                description: task.description,
 
-                return {
-                    title: task.title,
-                    description: task.description,
-                    assignedTo: task.assignedTo
-                        ? task.assignedTo.name
-                        : "Unassigned",
-                    priority: task.priority,
-                    status: task.status,
-                    deadline: task.deadline,
-                    overdue
-                };
-            })
+                assignedTo: task.assignedTo
+                    ? {
+                        name: task.assignedTo.name,
+                        email: task.assignedTo.email,
+                        department: task.assignedTo.department,
+                        position: task.assignedTo.position
+                    }
+                    : null,
+
+                priority: task.priority,
+                status: task.status,
+                deadline: task.deadline,
+
+                overdue:
+                    new Date(task.deadline) < now &&
+                    task.status !== "COMPLETED"
+            }))
         };
 
-        const analysis = await analyzeProject(projectData);
+        const result = await analyzeProject(
+            projectData
+        );
 
-        res.status(200).json({
-            message: "Project analysis completed",
-            analysis
+        return res.status(200).json({
+            message:
+                "AI project analysis generated successfully",
+            analysis: result.analysis
         });
+
     } catch (error) {
-        res.status(500).json({
-            message: "Failed to analyze project",
+        console.error(
+            "AI project analysis controller error:",
+            error.message
+        );
+
+        return res.status(500).json({
+            message:
+                "Failed to generate project analysis",
             error: error.message
         });
     }
@@ -88,15 +128,29 @@ const chatWithAssistantController = async (req, res) => {
         }
 
         const employees = await Employee.find()
-            .select("name email department position role status");
+            .select(
+                "name email department position role status"
+            );
 
         const projects = await Project.find()
-            .populate("manager", "name email")
-            .populate("members", "name email");
+            .populate(
+                "manager",
+                "name email"
+            )
+            .populate(
+                "members",
+                "name email"
+            );
 
         const tasks = await Task.find()
-            .populate("project", "name")
-            .populate("assignedTo", "name email department position");
+            .populate(
+                "project",
+                "name"
+            )
+            .populate(
+                "assignedTo",
+                "name email department position"
+            );
 
         const companyData = {
             employees: employees.map((employee) => ({
@@ -111,12 +165,17 @@ const chatWithAssistantController = async (req, res) => {
             projects: projects.map((project) => ({
                 name: project.name,
                 description: project.description,
+
                 manager: project.manager
                     ? project.manager.name
                     : "Unknown",
+
                 members: project.members
-                    ? project.members.map((member) => member.name)
+                    ? project.members.map(
+                        (member) => member.name
+                    )
                     : [],
+
                 startDate: project.startDate,
                 deadline: project.deadline,
                 status: project.status,
@@ -145,21 +204,42 @@ const chatWithAssistantController = async (req, res) => {
             }))
         };
 
+        const workload = await calculateWorkload();
+
+        companyData.workload = workload;
+
+        console.log(
+            "\nWORKLOAD DATA SENT TO AI:"
+        );
+
+        console.log(
+            JSON.stringify(
+                workload,
+                null,
+                2
+            )
+        );
+
         const answer = await chatWithAssistant(
             question,
             companyData
         );
 
-        res.status(200).json({
-            message: "Chat response generated successfully",
+        return res.status(200).json({
+            message:
+                "Chat response generated successfully",
             answer
         });
 
     } catch (error) {
-        console.error("Chat controller error:", error.message);
+        console.error(
+            "Chat controller error:",
+            error.message
+        );
 
-        res.status(500).json({
-            message: "Failed to generate chat response",
+        return res.status(500).json({
+            message:
+                "Failed to generate chat response",
             error: error.message
         });
     }

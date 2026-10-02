@@ -9,6 +9,7 @@ const employeeRoutes = require("./routes/employeeRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const workloadRoutes = require("./routes/workloadRoutes");
 
 connectDB();
 const app = express();
@@ -20,6 +21,7 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/workload", workloadRoutes);
 
 app.get("/api/test", (req, res) => {
     res.json({
