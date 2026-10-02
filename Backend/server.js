@@ -12,6 +12,8 @@ const aiRoutes = require("./routes/aiRoutes");
 const workloadRoutes = require("./routes/workloadRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const dashboardAIRoutes = require("./routes/dashboardAIRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const alertAIRoutes = require("./routes/alertAIRoutes");
 
 connectDB();
 const app = express();
@@ -26,6 +28,8 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/workload", workloadRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/dashboard/ai", dashboardAIRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/ai/alerts", alertAIRoutes);
 
 app.get("/api/test", (req, res) => {
     res.json({
