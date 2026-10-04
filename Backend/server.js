@@ -14,6 +14,8 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const dashboardAIRoutes = require("./routes/dashboardAIRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const alertAIRoutes = require("./routes/alertAIRoutes");
+const taskCommentRoutes = require("./routes/taskCommentRoutes");
+const taskActivityRoutes = require("./routes/taskActivityRoutes");
 
 connectDB();
 const app = express();
@@ -30,6 +32,8 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/dashboard/ai", dashboardAIRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/ai/alerts", alertAIRoutes);
+app.use("/api", taskCommentRoutes);
+app.use("/api", taskActivityRoutes);
 
 app.get("/api/test", (req, res) => {
     res.json({

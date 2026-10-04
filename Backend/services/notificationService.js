@@ -41,6 +41,25 @@ const createNotificationIfNotExists = async ({
     return notification;
 };
 
+const createTaskNotification = async ({
+    user,
+    type,
+    title,
+    message,
+    priority,
+    relatedTask,
+    relatedProject
+}) => {
+    return createNotificationIfNotExists({
+        user,
+        type,
+        title,
+        message,
+        priority,
+        relatedTask,
+        relatedProject
+    });
+};
 
 const generateNotifications = async () => {
     const now = new Date();
@@ -190,5 +209,6 @@ const generateNotifications = async () => {
 
 
 module.exports = {
-    generateNotifications
+    generateNotifications,
+    createTaskNotification
 };
