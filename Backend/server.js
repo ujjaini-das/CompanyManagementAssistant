@@ -16,6 +16,8 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const alertAIRoutes = require("./routes/alertAIRoutes");
 const taskCommentRoutes = require("./routes/taskCommentRoutes");
 const taskActivityRoutes = require("./routes/taskActivityRoutes");
+const performanceRoutes = require("./routes/performanceRoutes");
+const performanceAIRoutes = require("./routes/performanceAIRoutes");
 
 connectDB();
 const app = express();
@@ -34,6 +36,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/ai/alerts", alertAIRoutes);
 app.use("/api", taskCommentRoutes);
 app.use("/api", taskActivityRoutes);
+app.use("/api/performance", performanceRoutes);
+app.use("/api/ai/performance-analysis", performanceAIRoutes );
 
 app.get("/api/test", (req, res) => {
     res.json({
