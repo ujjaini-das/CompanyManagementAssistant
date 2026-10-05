@@ -18,6 +18,8 @@ const taskCommentRoutes = require("./routes/taskCommentRoutes");
 const taskActivityRoutes = require("./routes/taskActivityRoutes");
 const performanceRoutes = require("./routes/performanceRoutes");
 const performanceAIRoutes = require("./routes/performanceAIRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+const analyticsAIRoutes = require("./routes/analyticsAIRoutes");
 
 connectDB();
 const app = express();
@@ -38,6 +40,8 @@ app.use("/api", taskCommentRoutes);
 app.use("/api", taskActivityRoutes);
 app.use("/api/performance", performanceRoutes);
 app.use("/api/ai/performance-analysis", performanceAIRoutes );
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/ai/project-analysis", analyticsAIRoutes);
 
 app.get("/api/test", (req, res) => {
     res.json({
